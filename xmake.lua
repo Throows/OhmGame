@@ -1,7 +1,7 @@
 add_rules("mode.debug", "mode.releasedbg", "mode.release")
 add_rules("plugin.vsxmake.autoupdate")
 
-set_allowedplats("windows") --"linux", "macosx")
+set_allowedplats("windows", "macosx") --"linux")
 set_allowedmodes("debug", "releasedbg", "release")
 set_defaultmode("debug")
 set_runtimes("MD")
