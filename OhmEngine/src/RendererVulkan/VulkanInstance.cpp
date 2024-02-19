@@ -50,6 +50,7 @@ namespace OHE
 
     bool VulkanInstance::Cleanup()
     {
+        vkDestroyInstance(instance, nullptr);
         return false;
     }
 

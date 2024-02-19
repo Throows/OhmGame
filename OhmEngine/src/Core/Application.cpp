@@ -22,6 +22,15 @@ namespace OHE
 
         this->window_instance = glfwCreateWindow(WIDTH, HEIGHT, "OhmJourney - The Electronic Game", nullptr, nullptr);
 
+        if (glfwVulkanSupported() == GLFW_TRUE)
+        {
+            OHE_ENGINE_INFO("Vulkan is available with GLFW");
+        } 
+        else 
+        {
+            OHE_ENGINE_ERROR("Vulkan is not available with GLFW");
+        }
+
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions;
 
