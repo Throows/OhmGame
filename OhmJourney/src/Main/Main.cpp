@@ -7,7 +7,9 @@ int main(int argc, char** argv)
 
 	OHE_GAME_INFO("Starting game !");
 	OHE::Application app(argc, argv);
+	app.InitializeApplication();
+	app.Run();
 	OHE_GAME_INFO("Game Started !");
 
-	return app.Run();
+	return app.Cleanup();
 }

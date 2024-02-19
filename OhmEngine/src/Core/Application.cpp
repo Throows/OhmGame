@@ -1,6 +1,5 @@
 #include <OhmEngine/Core/Application.hpp>
-#include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_metal.h>
+//#include <vulkan/vulkan_metal.h>
 
 namespace OHE
 {
@@ -12,33 +11,47 @@ namespace OHE
 
     Application::~Application()
     {
+    }
 
-        // Just a try to prove that Vulkan can run on MacOS
-        VkInstance instance;
-        VkInstanceCreateInfo info = {};
+    bool Application::InitializeApplication()
+    {
+        glfwInit();
 
-        VkResult result = vkCreateInstance(&info, NULL, &instance);
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        if (result == VK_SUCCESS) {
-            OHE_ENGINE_INFO("VK running successfully");
-        } else {
-            OHE_ENGINE_ERROR("VK instance not runnning : {}", (int)result);
-        }
+        this->window_instance = glfwCreateWindow(WIDTH, HEIGHT, "OhmJourney - The Electronic Game", nullptr, nullptr);
+
+        uint32_t glfwExtensionCount = 0;
+        const char **glfwExtensions;
+
+        glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+        vulkan_instance.Initialize(glfwExtensionCount, glfwExtensions);
+        return false;
     }
 
     bool Application::Update()
     {
-        return true;
+        return false;
     }
 
     int Application::Run()
     {
-
-        /*while (1)
+        while(!glfwWindowShouldClose(this->window_instance))
         {
-        }*/
+            glfwPollEvents();
+        }
         OHE_ENGINE_TRACE("Game ended sucessfully");
         return 0;
+    }
+
+    bool Application::Cleanup()
+    {
+        glfwDestroyWindow(this->window_instance);
+        glfwTerminate();
+        vulkan_instance.Cleanup();
+        return true;
     }
 
     Application *Application::s_Instance = nullptr;
