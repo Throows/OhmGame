@@ -31,12 +31,7 @@ namespace OHE
             OHE_ENGINE_ERROR("Vulkan is not available with GLFW");
         }
 
-        uint32_t glfwExtensionCount = 0;
-        const char **glfwExtensions;
-
-        glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-        vulkan_instance.Initialize(glfwExtensionCount, glfwExtensions);
+        vulkan_instance.Initialize();
         return false;
     }
 

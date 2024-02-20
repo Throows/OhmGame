@@ -2,6 +2,12 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_metal.h>
 
+#ifdef NDEBUG
+const bool enableValidationLayers = false;
+#else
+const bool enableValidationLayers = true;
+#endif
+
 namespace OHE
 {
     class VulkanInstance
@@ -10,14 +16,36 @@ namespace OHE
         VulkanInstance();
         ~VulkanInstance();
 
-        bool Initialize(uint32_t glfwExtensionCount, const char **glfwExtensions);
+        bool Initialize();
         bool Cleanup();
 
         VkInstance &GetInstance() { return instance; }
 
+        static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
+            VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+            VkDebugUtilsMessageTypeFlagsEXT messageType,
+            const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+            void *pUserData);
+
     private:
         VkInstance instance;
+        VkDebugUtilsMessengerEXT debugMessenger;
+        const std::vector<const char*> validationLayers = {
+            "VK_LAYER_KHRONOS_validation"
+        };
 
-        void CreateInstance(uint32_t glfwExtensionCount, const char **glfwExtensions);
+        void CreateInstance();
+        bool CheckValidationLayerSupport();
+        std::vector<const char *> GetRequiredExtensions();
+        void SetupDebugMessenger();
+        VkResult CreateDebugUtilsMessengerEXT(  VkInstance instance,
+                                                const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
+                                                const VkAllocationCallbacks *pAllocator,
+                                                VkDebugUtilsMessengerEXT *pDebugMessenger);
+        void DestroyDebugUtilsMessengerEXT( VkInstance instance, 
+                                            VkDebugUtilsMessengerEXT debugMessenger,
+                                            const VkAllocationCallbacks *pAllocator);
+
+        void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
     };
 } // Namespace OHE

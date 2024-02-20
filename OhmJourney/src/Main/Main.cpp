@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 	app.InitializeApplication();
 	app.Run();
 	OHE_GAME_INFO("Game Started !");
-
-	return app.Cleanup();
+	app.Cleanup();
+	OHE_GAME_INFO("Game Cleaned Up !");
+	return 0;
 }
