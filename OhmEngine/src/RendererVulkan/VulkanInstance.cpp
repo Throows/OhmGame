@@ -61,6 +61,7 @@ namespace OHE
     {
         VulkanInstance::CreateInstance();
         VulkanInstance::SetupDebugMessenger();
+        this->physicalDevice.PickPhysicalDevice(this->instance);
         return false;
     }
 

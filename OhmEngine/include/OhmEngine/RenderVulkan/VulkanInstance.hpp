@@ -1,5 +1,7 @@
 #pragma once 
 
+#include <OhmEngine/RenderVulkan/PhysicalDevice.hpp>
+
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
 #else
@@ -27,6 +29,7 @@ namespace OHE
 
     private:
         VkInstance instance;
+        PhysicalDevice physicalDevice;
         VkDebugUtilsMessengerEXT debugMessenger;
         const std::vector<const char*> validationLayers = {
             "VK_LAYER_KHRONOS_validation"
