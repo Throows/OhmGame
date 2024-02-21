@@ -62,14 +62,16 @@ namespace OHE
         VulkanInstance::CreateInstance();
         VulkanInstance::SetupDebugMessenger();
         this->physicalDevice.PickPhysicalDevice(this->instance);
+        this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
         return false;
     }
 
     bool VulkanInstance::Cleanup()
     {
+        this->physicalDevice.DestroyLogicalDevice();
         if (enableValidationLayers)
         {
-            DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+            VulkanInstance::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         }
         vkDestroyInstance(instance, nullptr);
         return false;

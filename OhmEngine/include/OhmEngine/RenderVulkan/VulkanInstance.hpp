@@ -10,6 +10,11 @@ const bool enableValidationLayers = true;
 
 namespace OHE
 {
+
+    static const std::vector<const char *> validationLayers = {
+        "VK_LAYER_KHRONOS_validation"
+    };
+
     class VulkanInstance
     {
     public:
@@ -31,9 +36,6 @@ namespace OHE
         VkInstance instance;
         PhysicalDevice physicalDevice;
         VkDebugUtilsMessengerEXT debugMessenger;
-        const std::vector<const char*> validationLayers = {
-            "VK_LAYER_KHRONOS_validation"
-        };
 
         void CreateInstance();
         bool CheckValidationLayerSupport();
