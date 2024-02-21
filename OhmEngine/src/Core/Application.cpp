@@ -1,5 +1,4 @@
 #include <OhmEngine/Core/Application.hpp>
-//#include <vulkan/vulkan_metal.h>
 
 namespace OHE
 {

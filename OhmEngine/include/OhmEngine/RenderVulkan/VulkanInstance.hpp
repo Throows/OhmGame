@@ -1,6 +1,4 @@
 #pragma once 
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan_metal.h>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
