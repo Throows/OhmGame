@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <OhmEngine/RenderVulkan/PhysicalDevice.hpp>
+#include <OhmEngine/RenderVulkan/WindowSurface.hpp>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -21,7 +22,7 @@ namespace OHE
         VulkanInstance();
         ~VulkanInstance();
 
-        bool Initialize();
+        bool Initialize(GLFWwindow *window);
         bool Cleanup();
 
         VkInstance &GetInstance() { return instance; }
@@ -36,6 +37,7 @@ namespace OHE
         VkInstance instance;
         PhysicalDevice physicalDevice;
         VkDebugUtilsMessengerEXT debugMessenger;
+        WindowSurface windowSurface;
 
         void CreateInstance();
         bool CheckValidationLayerSupport();

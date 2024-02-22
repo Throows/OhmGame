@@ -2,7 +2,7 @@
 
 namespace OHE
 {
-    VulkanInstance::VulkanInstance(/* args */)
+    VulkanInstance::VulkanInstance()
     {
     }
 
@@ -57,10 +57,11 @@ namespace OHE
     {
     }
 
-    bool VulkanInstance::Initialize()
+    bool VulkanInstance::Initialize(GLFWwindow *window)
     {
         VulkanInstance::CreateInstance();
         VulkanInstance::SetupDebugMessenger();
+        this->windowSurface.CreateSurface(this->instance, window);
         this->physicalDevice.PickPhysicalDevice(this->instance);
         this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
         return false;
@@ -73,6 +74,7 @@ namespace OHE
         {
             VulkanInstance::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         }
+        this->windowSurface.CleanWindowSurface(this->instance);
         vkDestroyInstance(instance, nullptr);
         return false;
     }
