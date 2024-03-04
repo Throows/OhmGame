@@ -12,8 +12,8 @@ namespace OHE
         ~WindowSurface();
 
         void CreateSurface(VkInstance &instance, GLFWwindow *window);
-
         void CleanWindowSurface(VkInstance &instance);
+        VkSurfaceKHR &GetSurface() { return surface; }
 
     private:
         VkSurfaceKHR surface;

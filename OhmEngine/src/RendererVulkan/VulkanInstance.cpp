@@ -22,6 +22,8 @@ namespace OHE
         appInfos.apiVersion = VK_API_VERSION_1_0;
 
         std::vector<const char*> requiredExtensions = GetRequiredExtensions();
+        requiredExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
+        requiredExtensions.emplace_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
         requiredExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 
         VkInstanceCreateInfo instanceInfo{};
@@ -61,7 +63,7 @@ namespace OHE
     {
         VulkanInstance::CreateInstance();
         VulkanInstance::SetupDebugMessenger();
-        this->windowSurface.CreateSurface(this->instance, window);
+        this->physicalDevice.GetWindowSurface().CreateSurface(this->instance, window);
         this->physicalDevice.PickPhysicalDevice(this->instance);
         this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
         return false;
@@ -74,7 +76,7 @@ namespace OHE
         {
             VulkanInstance::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         }
-        this->windowSurface.CleanWindowSurface(this->instance);
+        this->physicalDevice.GetWindowSurface().CleanWindowSurface(this->instance);
         vkDestroyInstance(instance, nullptr);
         return false;
     }

@@ -37,7 +37,6 @@ namespace OHE
         VkInstance instance;
         PhysicalDevice physicalDevice;
         VkDebugUtilsMessengerEXT debugMessenger;
-        WindowSurface windowSurface;
 
         void CreateInstance();
         bool CheckValidationLayerSupport();

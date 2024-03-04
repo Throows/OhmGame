@@ -1,4 +1,5 @@
 #pragma once
+#include <OhmEngine/RenderVulkan/WindowSurface.hpp>
 
 namespace OHE
 {
@@ -14,12 +15,18 @@ namespace OHE
         }
     };
 
+    static const std::vector<const char *> deviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+        VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME,
+    };
+
     class PhysicalDevice
     {
     public:
         PhysicalDevice();
         ~PhysicalDevice();
 
+        WindowSurface &GetWindowSurface() { return windowSurface; }
         void PickPhysicalDevice(VkInstance &instance);
         void CreateLogicalDevice(bool enableValidationLayers);
         void DestroyLogicalDevice();
@@ -28,6 +35,8 @@ namespace OHE
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device;
         VkQueue graphicsQueue;
+        VkQueue presentQueue;
+        WindowSurface windowSurface;
 
         bool IsDeviceSuitable(VkPhysicalDevice device);
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
