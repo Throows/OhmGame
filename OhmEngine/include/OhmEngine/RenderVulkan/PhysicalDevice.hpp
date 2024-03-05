@@ -15,9 +15,15 @@ namespace OHE
         }
     };
 
-    static const std::vector<const char *> deviceExtensions = {
+    struct SwapChainSupportDetails
+    {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+
+    static std::vector<const char *> deviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-        VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME,
     };
 
     class PhysicalDevice
@@ -39,6 +45,9 @@ namespace OHE
         WindowSurface windowSurface;
 
         bool IsDeviceSuitable(VkPhysicalDevice device);
+        bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+
+        SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
     };
 } // namespace OHE

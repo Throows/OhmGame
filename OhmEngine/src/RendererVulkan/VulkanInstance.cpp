@@ -19,11 +19,12 @@ namespace OHE
         appInfos.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
         appInfos.pEngineName = "OhmEngine";
         appInfos.engineVersion = VK_MAKE_VERSION(0, 0, 1);
-        appInfos.apiVersion = VK_API_VERSION_1_0;
+        appInfos.apiVersion = VK_API_VERSION_1_2;
 
         std::vector<const char*> requiredExtensions = GetRequiredExtensions();
         requiredExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
         requiredExtensions.emplace_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
+        requiredExtensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
         requiredExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 
         VkInstanceCreateInfo instanceInfo{};

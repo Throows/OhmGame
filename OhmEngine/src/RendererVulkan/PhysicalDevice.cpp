@@ -43,17 +43,36 @@ namespace OHE
     //TODO: Implement a better way (Use the device score to get the better one)
     bool PhysicalDevice::IsDeviceSuitable(VkPhysicalDevice device)
     {
-        /*VkPhysicalDeviceProperties deviceProperties;
-        VkPhysicalDeviceFeatures deviceFeatures;
-        vkGetPhysicalDeviceProperties(device, &deviceProperties);
-        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-
-        return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
-               deviceFeatures.geometryShader;*/
-        // For now we only check if there is any graphic devices
         QueueFamilyIndices indices = FindQueueFamilies(device);
 
-        return indices.IsComplete(); 
+        bool extensionsSupported = CheckDeviceExtensionSupport(device);
+
+        bool swapChainAdequate = false;
+        if (extensionsSupported)
+        {
+            SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
+            swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+        }
+
+        return indices.IsComplete() && extensionsSupported && swapChainAdequate;
+    }
+
+    bool PhysicalDevice::CheckDeviceExtensionSupport(VkPhysicalDevice device)
+    {
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+        std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+        for (const auto &extension : availableExtensions)
+        {
+            requiredExtensions.erase(extension.extensionName);
+        }
+
+        return requiredExtensions.empty();
     }
 
     QueueFamilyIndices PhysicalDevice::FindQueueFamilies(VkPhysicalDevice device)
@@ -103,13 +122,17 @@ namespace OHE
             queueCreateInfos.push_back(queueCreateInfo);
         }
 
+        const char* port_sub = "VK_KHR_portability_subset";
+        deviceExtensions.emplace_back(port_sub);
+
         VkPhysicalDeviceFeatures deviceFeatures{};
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         createInfo.pQueueCreateInfos = queueCreateInfos.data();
         createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
         createInfo.pEnabledFeatures = &deviceFeatures;
-        createInfo.enabledExtensionCount = 0;
+        createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 
         if (enableValidationLayers)
         {
@@ -133,6 +156,32 @@ namespace OHE
     void PhysicalDevice::DestroyLogicalDevice()
     {
         vkDestroyDevice(device, nullptr);
+    }
+
+    SwapChainSupportDetails PhysicalDevice::QuerySwapChainSupport(VkPhysicalDevice device)
+    {
+        SwapChainSupportDetails details;
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, windowSurface.GetSurface(), &details.capabilities);
+
+        uint32_t formatCount;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, windowSurface.GetSurface(), &formatCount, nullptr);
+
+        if (formatCount != 0)
+        {
+            details.formats.resize(formatCount);
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, windowSurface.GetSurface(), &formatCount, details.formats.data());
+        }
+
+        uint32_t presentModeCount;
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, windowSurface.GetSurface(), &presentModeCount, nullptr);
+
+        if (presentModeCount != 0)
+        {
+            details.presentModes.resize(presentModeCount);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(device, windowSurface.GetSurface(), &presentModeCount, details.presentModes.data());
+        }
+
+        return details;
     }
 
 } // namespace OHE
