@@ -35,7 +35,9 @@ namespace OHE
         WindowSurface &GetWindowSurface() { return windowSurface; }
         void PickPhysicalDevice(VkInstance &instance);
         void CreateLogicalDevice(bool enableValidationLayers);
+        void CreateSwapChain();
         void DestroyLogicalDevice();
+        void DestroySwapChain();
 
     private:
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -43,11 +45,19 @@ namespace OHE
         VkQueue graphicsQueue;
         VkQueue presentQueue;
         WindowSurface windowSurface;
+        VkSwapchainKHR swapChain;
+        std::vector<VkImage> swapChainImages;
+        VkFormat swapChainImageFormat;
+        VkExtent2D swapChainExtent;
 
         bool IsDeviceSuitable(VkPhysicalDevice device);
         bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
         SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+
+        VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
+        VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
+        VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
     };
 } // namespace OHE

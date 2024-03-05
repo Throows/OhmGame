@@ -67,11 +67,13 @@ namespace OHE
         this->physicalDevice.GetWindowSurface().CreateSurface(this->instance, window);
         this->physicalDevice.PickPhysicalDevice(this->instance);
         this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
+        this->physicalDevice.CreateSwapChain();
         return false;
     }
 
     bool VulkanInstance::Cleanup()
     {
+        this->physicalDevice.DestroySwapChain();
         this->physicalDevice.DestroyLogicalDevice();
         if (enableValidationLayers)
         {

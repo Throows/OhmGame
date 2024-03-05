@@ -18,6 +18,8 @@ namespace OHE
 
         static Application* Get() { return s_Instance; };
 
+        GLFWwindow* GetWindow() { return window_instance; }
+
         const uint32_t WIDTH  = 800;
         const uint32_t HEIGHT = 600;
 
