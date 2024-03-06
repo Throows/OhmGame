@@ -68,11 +68,13 @@ namespace OHE
         this->physicalDevice.PickPhysicalDevice(this->instance);
         this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
         this->physicalDevice.CreateSwapChain();
+        this->physicalDevice.CreateImageViews();
         return false;
     }
 
     bool VulkanInstance::Cleanup()
     {
+        this->physicalDevice.DestroyImageViews();
         this->physicalDevice.DestroySwapChain();
         this->physicalDevice.DestroyLogicalDevice();
         if (enableValidationLayers)

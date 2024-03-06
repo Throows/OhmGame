@@ -36,8 +36,10 @@ namespace OHE
         void PickPhysicalDevice(VkInstance &instance);
         void CreateLogicalDevice(bool enableValidationLayers);
         void CreateSwapChain();
+        void CreateImageViews();
         void DestroyLogicalDevice();
         void DestroySwapChain();
+        void DestroyImageViews();
 
     private:
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -49,6 +51,7 @@ namespace OHE
         std::vector<VkImage> swapChainImages;
         VkFormat swapChainImageFormat;
         VkExtent2D swapChainExtent;
+        std::vector<VkImageView> swapChainImageViews;
 
         bool IsDeviceSuitable(VkPhysicalDevice device);
         bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
