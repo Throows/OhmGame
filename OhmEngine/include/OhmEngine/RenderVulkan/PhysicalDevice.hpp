@@ -40,8 +40,10 @@ namespace OHE
         void DestroyLogicalDevice();
         void DestroySwapChain();
         void DestroyImageViews();
+        void CreateGraphicsPipeline();
 
-    private:
+
+    private : 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device;
         VkQueue graphicsQueue;

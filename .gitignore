@@ -5,3 +5,5 @@ build
 .xmake
 bin
 .DS_store
+
+*.spv

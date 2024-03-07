@@ -51,9 +51,9 @@ namespace OHE
 
     bool Application::Cleanup()
     {
+        vulkan_instance.Cleanup();
         glfwDestroyWindow(this->window_instance);
         glfwTerminate();
-        vulkan_instance.Cleanup();
         return true;
     }
 
