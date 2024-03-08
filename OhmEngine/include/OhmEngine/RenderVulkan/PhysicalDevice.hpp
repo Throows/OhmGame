@@ -42,7 +42,6 @@ namespace OHE
         void DestroyImageViews();
         void CreateGraphicsPipeline();
 
-
     private : 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device;
@@ -64,5 +63,7 @@ namespace OHE
         VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
         VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
         VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+
+        VkShaderModule CreateShaderModule(const std::vector<char>& code);
     };
 } // namespace OHE
