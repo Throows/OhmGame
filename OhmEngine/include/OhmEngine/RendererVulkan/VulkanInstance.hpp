@@ -2,6 +2,7 @@
 
 #include <OhmEngine/RendererVulkan/PhysicalDevice.hpp>
 #include <OhmEngine/RendererVulkan/WindowSurface.hpp>
+#include <OhmEngine/RendererVulkan/VulkanPipeline.hpp>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -41,6 +42,8 @@ namespace OHE
     private:
         VkInstance instance;
         PhysicalDevice physicalDevice;
+        std::unique_ptr<VulkanPipeline> vulkanPipeline;
+
         VkDebugUtilsMessengerEXT debugMessenger;
 
         void CreateInstance();

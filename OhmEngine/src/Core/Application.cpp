@@ -26,7 +26,7 @@ namespace OHE
 
     int Application::Run()
     {
-        while(!glfwWindowShouldClose(this->renderWindow.GetWindow()))
+        while(!this->renderWindow.ShouldClose())
         {
             glfwPollEvents();
             vulkan_instance.GetPhysicalDevice().DrawFrame();

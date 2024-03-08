@@ -40,9 +40,8 @@ namespace OHE
         void DestroyLogicalDevice();
         void DestroySwapChain();
         void DestroyImageViews();
-        void CreateGraphicsPipeline();
-        void DestroyGraphicsPipeline();
         void CreateRenderPass();
+        void DestroyRenderPass();
         void CreateFramebuffers();
         void DestroyFramebuffers();
         void CreateCommandPool();
@@ -56,6 +55,10 @@ namespace OHE
 
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
+        //Temporary
+        VkDevice &GetLogicalDevice() { return device; }
+        VkRenderPass &GetRenderPass() { return renderPass; }
+
     private : 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device;
@@ -68,8 +71,6 @@ namespace OHE
         VkExtent2D swapChainExtent;
         std::vector<VkImageView> swapChainImageViews;
         VkRenderPass renderPass;
-        VkPipelineLayout pipelineLayout;
-        VkPipeline graphicsPipeline;
         std::vector<VkFramebuffer> swapChainFramebuffers;
         VkCommandPool commandPool;
         std::vector<VkCommandBuffer> commandBuffers;

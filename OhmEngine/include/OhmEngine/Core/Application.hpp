@@ -10,6 +10,9 @@ namespace OHE
         Application(int argc, char** argv);
         ~Application();
 
+        Application(const Application &) = delete;
+        Application &operator=(const Application &) = delete;
+
         bool InitializeApplication();
         bool Update();
         int Run();
@@ -17,8 +20,7 @@ namespace OHE
 
         static Application* Get() { return s_Instance; };
 
-        // Temporary
-        GLFWwindow* GetWindow() { return renderWindow.GetWindow(); }
+        RendererWindow &GetRendererWindow() { return renderWindow; }
 
     private:
         int m_Argc;

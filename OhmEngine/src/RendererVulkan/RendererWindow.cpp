@@ -36,4 +36,11 @@ namespace OHE
         glfwTerminate();
     }
 
+    FrameBufferSize RendererWindow::GetFrameBufferSize()
+    {
+        FrameBufferSize size;
+        glfwGetFramebufferSize(this->window, (int *)&size.width, (int *)&size.height);
+        return size;
+    }
+
 } // namespace OHE

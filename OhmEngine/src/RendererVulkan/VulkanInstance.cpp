@@ -70,7 +70,8 @@ namespace OHE
         this->physicalDevice.CreateSwapChain();
         this->physicalDevice.CreateImageViews();
         this->physicalDevice.CreateRenderPass();
-        this->physicalDevice.CreateGraphicsPipeline();
+        this->vulkanPipeline = std::make_unique<VulkanPipeline>(this->physicalDevice.GetLogicalDevice(), "Shaders/MyShader.vert.spv", "Shaders/MyShader.frag.spv");
+        this->vulkanPipeline->CreateGraphicsPipeline(this->physicalDevice.GetRenderPass());
         this->physicalDevice.CreateFramebuffers();
         this->physicalDevice.CreateCommandPool();
         this->physicalDevice.CreateCommandBuffer();
@@ -83,7 +84,8 @@ namespace OHE
         this->physicalDevice.CleanupSyncObjects();
         this->physicalDevice.DestroyCommandPool();
         this->physicalDevice.DestroyFramebuffers();
-        this->physicalDevice.DestroyGraphicsPipeline();
+        this->vulkanPipeline->DestroyGraphicsPipeline();
+        this->physicalDevice.DestroyRenderPass();
         this->physicalDevice.DestroyImageViews();
         this->physicalDevice.DestroySwapChain();
         this->physicalDevice.DestroyLogicalDevice();
