@@ -76,6 +76,7 @@ namespace OHE
 
     bool VulkanInstance::Cleanup()
     {
+        this->physicalDevice.DestroyFramebuffers();
         this->physicalDevice.DestroyGraphicsPipeline();
         this->physicalDevice.DestroyImageViews();
         this->physicalDevice.DestroySwapChain();
