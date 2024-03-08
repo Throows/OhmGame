@@ -69,6 +69,7 @@ namespace OHE
         this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
         this->physicalDevice.CreateSwapChain();
         this->physicalDevice.CreateImageViews();
+        this->physicalDevice.CreateRenderPass();
         this->physicalDevice.CreateGraphicsPipeline();
         return false;
     }

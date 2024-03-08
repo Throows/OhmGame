@@ -42,6 +42,7 @@ namespace OHE
         void DestroyImageViews();
         void CreateGraphicsPipeline();
         void DestroyGraphicsPipeline();
+        void CreateRenderPass();
 
     private : 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -54,7 +55,9 @@ namespace OHE
         VkFormat swapChainImageFormat;
         VkExtent2D swapChainExtent;
         std::vector<VkImageView> swapChainImageViews;
+        VkRenderPass renderPass;
         VkPipelineLayout pipelineLayout;
+        VkPipeline graphicsPipeline;
 
         bool IsDeviceSuitable(VkPhysicalDevice device);
         bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
