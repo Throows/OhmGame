@@ -30,6 +30,7 @@ namespace OHE
         bool Cleanup();
 
         VkInstance &GetInstance() { return instance; }
+        PhysicalDevice &GetPhysicalDevice() { return physicalDevice; }
 
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

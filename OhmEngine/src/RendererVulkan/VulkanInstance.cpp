@@ -71,11 +71,17 @@ namespace OHE
         this->physicalDevice.CreateImageViews();
         this->physicalDevice.CreateRenderPass();
         this->physicalDevice.CreateGraphicsPipeline();
+        this->physicalDevice.CreateFramebuffers();
+        this->physicalDevice.CreateCommandPool();
+        this->physicalDevice.CreateCommandBuffer();
+        this->physicalDevice.CreateSyncObjects();
         return false;
     }
 
     bool VulkanInstance::Cleanup()
     {
+        this->physicalDevice.CleanupSyncObjects();
+        this->physicalDevice.DestroyCommandPool();
         this->physicalDevice.DestroyFramebuffers();
         this->physicalDevice.DestroyGraphicsPipeline();
         this->physicalDevice.DestroyImageViews();

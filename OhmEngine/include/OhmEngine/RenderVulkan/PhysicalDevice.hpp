@@ -45,6 +45,16 @@ namespace OHE
         void CreateRenderPass();
         void CreateFramebuffers();
         void DestroyFramebuffers();
+        void CreateCommandPool();
+        void DestroyCommandPool();
+        void CreateCommandBuffer();
+        void CreateSyncObjects();
+        void CleanupSyncObjects();
+
+        void DrawFrame();
+        void WaitIdle() { vkDeviceWaitIdle(device); };
+
+        void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     private : 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -61,6 +71,14 @@ namespace OHE
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
         std::vector<VkFramebuffer> swapChainFramebuffers;
+        VkCommandPool commandPool;
+        std::vector<VkCommandBuffer> commandBuffers;
+        std::vector<VkSemaphore> imageAvailableSemaphores;
+        std::vector<VkSemaphore> renderFinishedSemaphores;
+        std::vector<VkFence> inFlightFences;
+
+        const int MAX_FRAMES_IN_FLIGHT = 2;
+        uint32_t currentFrame = 0;
 
         bool IsDeviceSuitable(VkPhysicalDevice device);
         bool CheckDeviceExtensionSupport(VkPhysicalDevice device);

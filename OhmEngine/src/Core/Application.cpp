@@ -44,7 +44,9 @@ namespace OHE
         while(!glfwWindowShouldClose(this->window_instance))
         {
             glfwPollEvents();
+            vulkan_instance.GetPhysicalDevice().DrawFrame();
         }
+        vulkan_instance.GetPhysicalDevice().WaitIdle();
         OHE_ENGINE_TRACE("Game ended sucessfully");
         return 0;
     }
