@@ -1,5 +1,5 @@
 #pragma once
-#include <OhmEngine/RenderVulkan/WindowSurface.hpp>
+#include <OhmEngine/RendererVulkan/WindowSurface.hpp>
 
 namespace OHE
 {

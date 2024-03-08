@@ -1,6 +1,6 @@
-#include <OhmEngine/RenderVulkan/PhysicalDevice.hpp>
-#include <OhmEngine/RenderVulkan/VulkanInstance.hpp>
-#include <OhmEngine/RenderVulkan/WindowSurface.hpp>
+#include <OhmEngine/RendererVulkan/PhysicalDevice.hpp>
+#include <OhmEngine/RendererVulkan/VulkanInstance.hpp>
+#include <OhmEngine/RendererVulkan/WindowSurface.hpp>
 #include <OhmEngine/Core/Application.hpp>
 
 namespace OHE

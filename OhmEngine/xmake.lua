@@ -20,7 +20,7 @@ target("OhmEngine")
     add_rpathdirs(vulkan_sdk_path .. "macOS/lib")
     add_defines("VK_USE_PLATFORM_METAL_EXT")
     add_defines("GLFW_EXPOSE_NATIVE_COCOA")
-    add_frameworks("quartzcore", "AppKit")
+    --add_frameworks("quartzcore", "AppKit")
   elseif is_plat("windows") then
   add_packages("vulkansdk")
     add_defines("VK_USE_PLATFORM_WIN32_KHR")

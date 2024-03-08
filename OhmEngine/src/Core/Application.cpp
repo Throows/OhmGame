@@ -3,7 +3,7 @@
 namespace OHE
 {
     Application::Application(int argc, char** argv)
-        : m_Argc(argc), m_Argv(argv)
+        : m_Argc(argc), m_Argv(argv), renderWindow{"OhmJourney - The Electronic Game", 800, 600}
     {
         s_Instance = this;
     }
@@ -14,23 +14,8 @@ namespace OHE
 
     bool Application::InitializeApplication()
     {
-        glfwInit();
-
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-        this->window_instance = glfwCreateWindow(WIDTH, HEIGHT, "OhmJourney - The Electronic Game", nullptr, nullptr);
-
-        if (glfwVulkanSupported() == GLFW_TRUE)
-        {
-            OHE_ENGINE_INFO("Vulkan is available with GLFW");
-        } 
-        else 
-        {
-            OHE_ENGINE_ERROR("Vulkan is not available with GLFW");
-        }
-
-        vulkan_instance.Initialize(this->window_instance);
+        this->renderWindow.InitializeWindow();
+        vulkan_instance.Initialize(this->renderWindow.GetWindow());
         return false;
     }
 
@@ -41,7 +26,7 @@ namespace OHE
 
     int Application::Run()
     {
-        while(!glfwWindowShouldClose(this->window_instance))
+        while(!glfwWindowShouldClose(this->renderWindow.GetWindow()))
         {
             glfwPollEvents();
             vulkan_instance.GetPhysicalDevice().DrawFrame();
@@ -54,8 +39,7 @@ namespace OHE
     bool Application::Cleanup()
     {
         vulkan_instance.Cleanup();
-        glfwDestroyWindow(this->window_instance);
-        glfwTerminate();
+        this->renderWindow.DestroyWindow();
         return true;
     }
 

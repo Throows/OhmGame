@@ -1,7 +1,7 @@
 #pragma once 
 
-#include <OhmEngine/RenderVulkan/PhysicalDevice.hpp>
-#include <OhmEngine/RenderVulkan/WindowSurface.hpp>
+#include <OhmEngine/RendererVulkan/PhysicalDevice.hpp>
+#include <OhmEngine/RendererVulkan/WindowSurface.hpp>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
