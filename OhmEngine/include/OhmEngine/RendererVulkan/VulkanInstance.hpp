@@ -32,6 +32,7 @@ namespace OHE
 
         VkInstance &GetInstance() { return instance; }
         PhysicalDevice &GetPhysicalDevice() { return physicalDevice; }
+        WindowSurface &GetWindowSurface() { return windowSurface; }
 
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -39,9 +40,12 @@ namespace OHE
             const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
             void *pUserData);
 
+        void VulkanInstance::DrawFrame();
+
     private:
         VkInstance instance;
         PhysicalDevice physicalDevice;
+        WindowSurface windowSurface;
         std::unique_ptr<VulkanPipeline> vulkanPipeline;
 
         VkDebugUtilsMessengerEXT debugMessenger;
