@@ -5,15 +5,16 @@ namespace OHE
     class RenderPass
     {
     public:
-        RenderPass(/* args */);
+        RenderPass(VkDevice &device);
         ~RenderPass();
 
-        void CreateRenderPass();
+        void CreateRenderPass(VkFormat format);
         void DestroyRenderPass();
 
         VkRenderPass &GetRenderPass() { return renderPass; }
 
     private:
+        VkDevice &device;
         VkRenderPass renderPass;
     };
 }

@@ -1,5 +1,8 @@
 #pragma once 
 
+#include <OhmEngine/RendererVulkan/PhysicalDevice.hpp>
+#include <OhmEngine/RendererVulkan/RendererWindow.hpp>
+
 namespace OHE
 {
 
@@ -13,16 +16,18 @@ namespace OHE
     class SwapChain
     {
         public:
-            SwapChain();
+            SwapChain(VkDevice &device, PhysicalDevice &physicalDevice, VkSurfaceKHR &surface, RendererWindow &window, VkRenderPass &renderPass);
             ~SwapChain();
 
             SwapChain(const SwapChain&) = delete;
             SwapChain& operator=(const SwapChain&) = delete;
 
             void CreateSwapChain();
-            void DestroySwapChain();
+            void CreateFramebuffers();
             void CreateImageViews();
+            void DestroySwapChain();
             void DestroyImageViews();
+            void DestroyFramebuffers();
 
             SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
 
@@ -31,11 +36,19 @@ namespace OHE
             VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
         private:
+            VkDevice &device;
+            PhysicalDevice &physicalDevice;
+            VkSurfaceKHR &surface;
+            RendererWindow &window;
+            VkRenderPass &renderPass;
+
             VkSwapchainKHR swapChain;
             std::vector<VkImage> swapChainImages;
             VkFormat swapChainImageFormat;
             VkExtent2D swapChainExtent;
             std::vector<VkImageView> swapChainImageViews;
+
+            std::vector<VkFramebuffer> m_swapChainFramebuffers;
     };
 
 } // namespace OHE

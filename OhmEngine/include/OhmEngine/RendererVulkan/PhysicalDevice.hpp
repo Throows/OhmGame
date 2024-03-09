@@ -18,7 +18,7 @@ namespace OHE
     class PhysicalDevice
     {
     public:
-        PhysicalDevice();
+        PhysicalDevice(VkSurfaceKHR &surface);
         ~PhysicalDevice();
 
         void PickPhysicalDevice(VkInstance &instance);
@@ -33,7 +33,21 @@ namespace OHE
 
         QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
-    private : 
+        std::vector<const char *> deviceExtensions = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+        };
+
+        const std::vector<const char *> validationLayers = {
+            "VK_LAYER_KHRONOS_validation",
+            //"VK_LAYER_LUNARG_api_dump",
+            //"VK_LAYER_KHRONOS_profiles",
+            //"VK_LAYER_KHRONOS_synchronization2",
+            //"VK_LAYER_KHRONOS_shader_object",
+        };
+
+    private: 
+        VkSurfaceKHR &surface;
+
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device;
         VkQueue graphicsQueue;
@@ -42,9 +56,9 @@ namespace OHE
         bool IsDeviceSuitable(VkPhysicalDevice device);
         bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 
-        std::vector<const char *> deviceExtensions = {
-            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-        };
+        // Temporary
+        SwapChainSupportDetails QuerySwapChainSupport_temp(VkPhysicalDevice device);
+
     };
 
 } // namespace OHE

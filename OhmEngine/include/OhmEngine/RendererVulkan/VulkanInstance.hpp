@@ -5,7 +5,6 @@
 #include <OhmEngine/RendererVulkan/SwapChain.hpp>
 #include <OhmEngine/RendererVulkan/RenderPass.hpp>
 #include <OhmEngine/RendererVulkan/VulkanPipeline.hpp>
-#include <OhmEngine/RendererVulkan/FrameBuffer.hpp>
 #include <OhmEngine/RendererVulkan/CommandBuffer.hpp>
 #include <OhmEngine/RendererVulkan/Fence.hpp>
 
@@ -45,7 +44,6 @@ namespace OHE
         SwapChain swapChain;
         RenderPass renderPass;
         std::unique_ptr<VulkanPipeline> vulkanPipeline;
-        FrameBuffer frameBuffer;
         CommandBuffer commandBuffer;
         Fence fence;
 
@@ -65,12 +63,5 @@ namespace OHE
 
         void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
 
-        const std::vector<const char *> validationLayers = {
-            "VK_LAYER_KHRONOS_validation",
-            //"VK_LAYER_LUNARG_api_dump",
-            //"VK_LAYER_KHRONOS_profiles",
-            //"VK_LAYER_KHRONOS_synchronization2",
-            //"VK_LAYER_KHRONOS_shader_object",
-        };
     };
 } // Namespace OHE
