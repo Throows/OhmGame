@@ -2,7 +2,7 @@
 
 namespace OHE
 {
-    Fence::Fence(/* args */)
+    Fence::Fence(VkDevice &device) : device(device)
     {
     }
 

@@ -11,6 +11,8 @@ namespace OHE
         void CreateRenderPass();
         void DestroyRenderPass();
 
+        VkRenderPass &GetRenderPass() { return renderPass; }
+
     private:
         VkRenderPass renderPass;
     };

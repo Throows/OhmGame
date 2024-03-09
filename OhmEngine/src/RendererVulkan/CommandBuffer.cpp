@@ -1,29 +1,25 @@
 #include <OhmEngine/RendererVulkan/CommandBuffer.hpp>
-
+#include <OhmEngine/RendererVulkan/Fence.hpp>
 namespace OHE 
 {
 
-    CommandBuffer::CommandBuffer()
+    CommandBuffer::CommandBuffer(VkDevice &device) : device(device)
     {
-        CreateCommandPool();
-        CreateCommandBuffers();
     }
 
     CommandBuffer::~CommandBuffer()
     {
-        DestroyCommandPool();
     }
 
-    void CommandBuffer::CreateCommandPool()
+    void CommandBuffer::CreateCommandPool(uint32_t queueFamilyIndex)
     {
-        QueueFamilyIndices queueFamilyIndices = PhysicalDevice::FindQueueFamilies(physicalDevice);
 
         VkCommandPoolCreateInfo poolInfo{};
         poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
         poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-        poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+        poolInfo.queueFamilyIndex = queueFamilyIndex;
 
-        if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
+        if (vkCreateCommandPool(device, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create command pool!");
         }
@@ -31,19 +27,19 @@ namespace OHE
 
     void CommandBuffer::DestroyCommandPool()
     {
-        vkDestroyCommandPool(device, commandPool, nullptr);
+        vkDestroyCommandPool(device, m_commandPool, nullptr);
     }
 
     void CommandBuffer::CreateCommandBuffers()
     {
-        commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+        m_commandBuffers.resize(Fence::MAX_FRAMES_IN_FLIGHT);
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.commandPool = commandPool;
+        allocInfo.commandPool = m_commandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
+        allocInfo.commandBufferCount = (uint32_t)m_commandBuffers.size();
 
-        if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS)
+        if (vkAllocateCommandBuffers(device, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to allocate command buffers!");
         }

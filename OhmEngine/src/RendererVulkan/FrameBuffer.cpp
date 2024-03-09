@@ -41,4 +41,5 @@ namespace OHE
             vkDestroyFramebuffer(device, framebuffer, nullptr);
         }
     }
-}
+
+} // namespace OHE

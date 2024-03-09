@@ -44,7 +44,7 @@ namespace OHE
     //TODO: Implement a better way (Use the device score to get the better one)
     bool PhysicalDevice::IsDeviceSuitable(VkPhysicalDevice device)
     {
-        QueueFamilyIndices indices = FindQueueFamilies(device);
+        QueueFamilyIndices indices = PhysicalDevice::FindQueueFamilies(device);
 
         bool extensionsSupported = CheckDeviceExtensionSupport(device);
 

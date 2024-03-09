@@ -15,10 +15,6 @@ namespace OHE
         }
     };
 
-    static std::vector<const char *> deviceExtensions = {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-    };
-
     class PhysicalDevice
     {
     public:
@@ -33,6 +29,9 @@ namespace OHE
 
         //Temporary
         VkDevice &GetLogicalDevice() { return device; }
+        VkPhysicalDevice &GetPhysicalDevice() { return physicalDevice; }
+
+        QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
     private : 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -40,11 +39,12 @@ namespace OHE
         VkQueue graphicsQueue;
         VkQueue presentQueue;
 
-        const int MAX_FRAMES_IN_FLIGHT = 2;
-        uint32_t currentFrame = 0;
-
         bool IsDeviceSuitable(VkPhysicalDevice device);
         bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-        QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+
+        std::vector<const char *> deviceExtensions = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+        };
     };
+
 } // namespace OHE

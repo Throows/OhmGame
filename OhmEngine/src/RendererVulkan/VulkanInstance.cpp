@@ -64,36 +64,38 @@ namespace OHE
     {
         VulkanInstance::CreateInstance();
         VulkanInstance::SetupDebugMessenger();
-        this->physicalDevice.GetWindowSurface().CreateSurface(this->instance, window);
+        this->windowSurface.CreateSurface(this->instance, window);
         this->physicalDevice.PickPhysicalDevice(this->instance);
         this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
-        this->physicalDevice.CreateSwapChain();
-        this->physicalDevice.CreateImageViews();
-        this->physicalDevice.CreateRenderPass();
+        this->swapChain.CreateSwapChain();
+        this->swapChain.CreateImageViews();
+        this->renderPass.CreateRenderPass();
         this->vulkanPipeline = std::make_unique<VulkanPipeline>(this->physicalDevice.GetLogicalDevice(), "Shaders/MyShader.vert.spv", "Shaders/MyShader.frag.spv");
-        this->vulkanPipeline->CreateGraphicsPipeline(this->physicalDevice.GetRenderPass());
-        this->physicalDevice.CreateFramebuffers();
-        this->physicalDevice.CreateCommandPool();
-        this->physicalDevice.CreateCommandBuffer();
-        this->physicalDevice.CreateSyncObjects();
+        this->vulkanPipeline->CreateGraphicsPipeline(this->renderPass.GetRenderPass());
+        this->frameBuffer.CreateFramebuffers();
+        //TEMPORARY
+        QueueFamilyIndices indices = this->physicalDevice.FindQueueFamilies(this->physicalDevice.GetPhysicalDevice());
+        this->commandBuffer.CreateCommandPool(indices.graphicsFamily.value());
+        this->commandBuffer.CreateCommandBuffers();
+        this->fence.CreateSyncObjects();
         return false;
     }
 
     bool VulkanInstance::Cleanup()
     {
-        this->physicalDevice.CleanupSyncObjects();
-        this->physicalDevice.DestroyCommandPool();
-        this->physicalDevice.DestroyFramebuffers();
+        this->fence.CleanupSyncObjects();
+        this->commandBuffer.DestroyCommandPool();
+        this->frameBuffer.DestroyFramebuffers();
         this->vulkanPipeline->DestroyGraphicsPipeline();
-        this->physicalDevice.DestroyRenderPass();
-        this->physicalDevice.DestroyImageViews();
-        this->physicalDevice.DestroySwapChain();
+        this->renderPass.DestroyRenderPass();
+        this->swapChain.DestroyImageViews();
+        this->swapChain.DestroySwapChain();
         this->physicalDevice.DestroyLogicalDevice();
         if (enableValidationLayers)
         {
             VulkanInstance::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         }
-        this->physicalDevice.GetWindowSurface().CleanWindowSurface(this->instance);
+        this->windowSurface.CleanWindowSurface(this->instance);
         vkDestroyInstance(instance, nullptr);
         return false;
     }
@@ -244,7 +246,7 @@ namespace OHE
 
         vkQueuePresentKHR(presentQueue, &presentInfo);
 
-        currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+        fence.NextFrame();
     }
 
 } // namespace OHE
