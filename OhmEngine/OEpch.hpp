@@ -18,6 +18,10 @@
 #include <GLFW/glfw3.h>
 
 #include <vulkan/vulkan.h>
+#ifdef _WIN32
+#include <vulkan/vulkan_win32.h>
+#elif __APPLE__
 #include <vulkan/vulkan_metal.h>
+#endif
 
-#include "include/OhmEngine/Core/Logger.hpp"
+#include "OhmEngine/Core/Logger.hpp"

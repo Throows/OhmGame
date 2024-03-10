@@ -12,6 +12,8 @@ namespace OHE {
         void CreateGraphicsPipeline(VkRenderPass &renderPass);
         void DestroyGraphicsPipeline();
 
+        VkPipeline GetGraphicsPipeline() { return graphicsPipeline; }
+
     private:
         VkDevice& device;
         VkPipelineLayout pipelineLayout;

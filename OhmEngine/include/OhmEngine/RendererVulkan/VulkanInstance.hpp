@@ -2,7 +2,11 @@
 
 #include <OhmEngine/RendererVulkan/PhysicalDevice.hpp>
 #include <OhmEngine/RendererVulkan/WindowSurface.hpp>
+#include <OhmEngine/RendererVulkan/SwapChain.hpp>
+#include <OhmEngine/RendererVulkan/RenderPass.hpp>
 #include <OhmEngine/RendererVulkan/VulkanPipeline.hpp>
+#include <OhmEngine/RendererVulkan/CommandBuffer.hpp>
+#include <OhmEngine/RendererVulkan/Fence.hpp>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -12,26 +16,18 @@ const bool enableValidationLayers = true;
 
 namespace OHE
 {
-
-    static const std::vector<const char *> validationLayers = {
-        "VK_LAYER_KHRONOS_validation",
-        //"VK_LAYER_LUNARG_api_dump",
-        //"VK_LAYER_KHRONOS_profiles",
-        //"VK_LAYER_KHRONOS_synchronization2",
-        //"VK_LAYER_KHRONOS_shader_object",
-    };
-
     class VulkanInstance
     {
     public:
-        VulkanInstance();
+        VulkanInstance(RendererWindow &window);
         ~VulkanInstance();
 
-        bool Initialize(GLFWwindow *window);
+        bool Initialize();
         bool Cleanup();
 
         VkInstance &GetInstance() { return instance; }
         PhysicalDevice &GetPhysicalDevice() { return physicalDevice; }
+        WindowSurface &GetWindowSurface() { return windowSurface; }
 
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -39,10 +35,18 @@ namespace OHE
             const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
             void *pUserData);
 
+        void DrawFrame();
+
     private:
+        RendererWindow &rendererWindow;
         VkInstance instance;
-        PhysicalDevice physicalDevice;
-        std::unique_ptr<VulkanPipeline> vulkanPipeline;
+        WindowSurface windowSurface;
+        PhysicalDevice physicalDevice{windowSurface.GetSurface()};
+        VulkanPipeline vulkanPipeline{physicalDevice.GetLogicalDevice(), "Shaders/MyShader.vert.spv", "Shaders/MyShader.frag.spv" };
+        RenderPass renderPass{physicalDevice.GetLogicalDevice()};
+        SwapChain swapChain{physicalDevice.GetLogicalDevice(), physicalDevice, windowSurface.GetSurface(), rendererWindow, renderPass.GetRenderPass()};
+        CommandBuffer commandBuffer{physicalDevice.GetLogicalDevice(), swapChain, renderPass, vulkanPipeline};
+        Fence fence{physicalDevice.GetLogicalDevice()};
 
         VkDebugUtilsMessengerEXT debugMessenger;
 
@@ -59,5 +63,6 @@ namespace OHE
                                             const VkAllocationCallbacks *pAllocator);
 
         void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+
     };
 } // Namespace OHE
