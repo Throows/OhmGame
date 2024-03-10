@@ -12,6 +12,7 @@ namespace OHE
         void DestroyRenderPass();
 
         VkRenderPass &GetRenderPass() { return renderPass; }
+        VkRenderPass GetRenderPass_noref() { return renderPass; }
 
     private:
         VkDevice &device;

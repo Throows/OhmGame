@@ -5,6 +5,7 @@ if is_plat("windows") then
 end
 
 target("OhmEngine")
+  set_version("0.0.0")
   set_kind("static")
   add_headerfiles("**.hpp")
   add_includedirs("include")
@@ -22,7 +23,8 @@ target("OhmEngine")
     add_defines("GLFW_EXPOSE_NATIVE_COCOA")
     --add_frameworks("quartzcore", "AppKit")
   elseif is_plat("windows") then
-  add_packages("vulkansdk")
+    add_packages("vulkansdk")
+    add_defines("NOMINMAX")
     add_defines("VK_USE_PLATFORM_WIN32_KHR")
     add_defines("GLFW_EXPOSE_NATIVE_WIN32")
 	  add_syslinks("User32")

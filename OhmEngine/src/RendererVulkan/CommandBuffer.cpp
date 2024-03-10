@@ -3,7 +3,8 @@
 namespace OHE 
 {
 
-    CommandBuffer::CommandBuffer(VkDevice &device) : device(device)
+    CommandBuffer::CommandBuffer(VkDevice &device, SwapChain &swapChain, RenderPass &renderPass, VulkanPipeline &pipeline) 
+        : device(device), swapChain(swapChain), renderPass(renderPass), pipeline(pipeline)
     {
     }
 
@@ -57,10 +58,10 @@ namespace OHE
 
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = renderPass;
-        renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
+        renderPassInfo.renderPass = renderPass.GetRenderPass_noref();
+        renderPassInfo.framebuffer = swapChain.GetSwapChainFramebuffer(imageIndex);
         renderPassInfo.renderArea.offset = {0, 0};
-        renderPassInfo.renderArea.extent = swapChainExtent;
+        renderPassInfo.renderArea.extent = swapChain.GetSwapChainExtent();
 
         VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
         renderPassInfo.clearValueCount = 1;
@@ -68,20 +69,20 @@ namespace OHE
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetGraphicsPipeline());
 
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = (float)swapChainExtent.width;
-        viewport.height = (float)swapChainExtent.height;
+        viewport.width = (float)swapChain.GetSwapChainExtent().width;
+        viewport.height = (float)swapChain.GetSwapChainExtent().height;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
         VkRect2D scissor{};
         scissor.offset = {0, 0};
-        scissor.extent = swapChainExtent;
+        scissor.extent = swapChain.GetSwapChainExtent();
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
         vkCmdDraw(commandBuffer, 3, 1, 0, 0);
@@ -92,5 +93,11 @@ namespace OHE
         {
             throw std::runtime_error("failed to record command buffer!");
         }
+    }
+
+    void CommandBuffer::ResetAndRecordCommandBuffer(uint32_t imageIndex)
+    {
+        vkResetCommandBuffer(m_commandBuffers[imageIndex], 0);
+        RecordCommandBuffer(m_commandBuffers[imageIndex], imageIndex);
     }
 }

@@ -5,14 +5,6 @@
 
 namespace OHE
 {
-
-    struct SwapChainSupportDetails
-    {
-        VkSurfaceCapabilitiesKHR capabilities;
-        std::vector<VkSurfaceFormatKHR> formats;
-        std::vector<VkPresentModeKHR> presentModes;
-    };
-
     class SwapChain
     {
         public:
@@ -29,11 +21,15 @@ namespace OHE
             void DestroyImageViews();
             void DestroyFramebuffers();
 
-            SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-
             VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
             VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
             VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+
+            VkExtent2D GetSwapChainExtent() { return swapChainExtent; }
+            VkFramebuffer GetSwapChainFramebuffer(uint32_t index) { return m_swapChainFramebuffers[index]; }
+            VkFormat &GetSwapChainImageFormat() { return swapChainImageFormat; }
+            VkSwapchainKHR GetSwapChain() { return swapChain; }
+
 
         private:
             VkDevice &device;

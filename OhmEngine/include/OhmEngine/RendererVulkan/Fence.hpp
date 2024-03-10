@@ -11,7 +11,14 @@ namespace OHE
         void CreateSyncObjects();
         void CleanupSyncObjects();
 
+        void WaitForFences();
+        uint32_t AquireNextFrame(VkSwapchainKHR swapChain);
         void NextFrame() { currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT; }
+        uint32_t GetCurrentFrame() { return currentFrame; }
+
+        VkSemaphore GetImageAvailableSemaphore() { return imageAvailableSemaphores[currentFrame]; }
+        VkSemaphore GetRenderFinishedSemaphore() { return renderFinishedSemaphores[currentFrame]; }
+        VkFence GetInFlightFence() { return inFlightFences[currentFrame]; }
 
         static const int MAX_FRAMES_IN_FLIGHT = 2;
 

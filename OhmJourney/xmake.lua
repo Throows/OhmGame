@@ -1,4 +1,5 @@
 add_requires("spdlog", "glfw", "glad", "glm")
+
 if is_plat("windows") then 
   add_requires("vulkansdk")
 end
@@ -21,7 +22,10 @@ target("OhmJourney")
     add_defines("VK_USE_PLATFORM_METAL_EXT")
     add_frameworks("quartzcore", "AppKit")
   elseif is_plat("windows") then
+    add_packages("vulkansdk")
+    add_defines("NOMINMAX")
     add_defines("VK_USE_PLATFORM_WIN32_KHR")
+    add_defines("GLFW_EXPOSE_NATIVE_WIN32")
 	  add_syslinks("User32")
   end 
 

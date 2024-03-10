@@ -42,7 +42,7 @@ namespace OHE
         }
     }
 
-    SwapChainSupportDetails PhysicalDevice::QuerySwapChainSupport_temp(VkPhysicalDevice device)
+    SwapChainSupportDetails PhysicalDevice::QuerySwapChainSupport(VkPhysicalDevice device)
     {
         SwapChainSupportDetails details;
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
@@ -78,7 +78,7 @@ namespace OHE
         bool swapChainAdequate = false;
         if (extensionsSupported)
         {
-            SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
+            SwapChainSupportDetails swapChainSupport = PhysicalDevice::QuerySwapChainSupport(device);
             swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
 
@@ -150,8 +150,10 @@ namespace OHE
             queueCreateInfos.push_back(queueCreateInfo);
         }
 
+#ifdef __APPLE__
         const char* port_sub = "VK_KHR_portability_subset";
         deviceExtensions.emplace_back(port_sub);
+#endif
 
         VkPhysicalDeviceFeatures deviceFeatures{};
         VkDeviceCreateInfo createInfo{};

@@ -3,7 +3,7 @@
 namespace OHE
 {
     Application::Application(int argc, char** argv)
-        : m_Argc(argc), m_Argv(argv), renderWindow{"OhmJourney - The Electronic Game", 800, 600}
+        : m_Argc(argc), m_Argv(argv), renderWindow{"OhmJourney - The Electronic Game", 800, 600}, vulkan_instance{renderWindow}
     {
         s_Instance = this;
     }
@@ -15,7 +15,7 @@ namespace OHE
     bool Application::InitializeApplication()
     {
         this->renderWindow.InitializeWindow();
-        vulkan_instance.Initialize(this->renderWindow.GetWindow());
+        vulkan_instance.Initialize();
         return false;
     }
 
@@ -29,7 +29,7 @@ namespace OHE
         while(!this->renderWindow.ShouldClose())
         {
             glfwPollEvents();
-            vulkan_instance.GetPhysicalDevice().DrawFrame();
+            vulkan_instance.DrawFrame();
         }
         vulkan_instance.GetPhysicalDevice().WaitIdle();
         OHE_ENGINE_TRACE("Game ended sucessfully");

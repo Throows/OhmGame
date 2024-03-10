@@ -2,7 +2,8 @@
 
 namespace OHE
 {
-    VulkanInstance::VulkanInstance()
+    VulkanInstance::VulkanInstance(RendererWindow &window) 
+        : rendererWindow(window)
     {
     }
 
@@ -23,9 +24,12 @@ namespace OHE
 
         std::vector<const char*> requiredExtensions = GetRequiredExtensions();
         requiredExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
+#ifdef __APPLE__
         requiredExtensions.emplace_back(VK_EXT_METAL_SURFACE_EXTENSION_NAME);
         requiredExtensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+#endif
         requiredExtensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+
 
         VkInstanceCreateInfo instanceInfo{};
         instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -38,8 +42,8 @@ namespace OHE
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
         if (enableValidationLayers)
         {
-            instanceInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-            instanceInfo.ppEnabledLayerNames = validationLayers.data();
+            instanceInfo.enabledLayerCount = static_cast<uint32_t>(this->physicalDevice.validationLayers.size());
+            instanceInfo.ppEnabledLayerNames = this->physicalDevice.validationLayers.data();
             VulkanInstance::PopulateDebugMessengerCreateInfo(debugCreateInfo);
             instanceInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
         }
@@ -60,19 +64,18 @@ namespace OHE
     {
     }
 
-    bool VulkanInstance::Initialize(GLFWwindow *window)
+    bool VulkanInstance::Initialize()
     {
         VulkanInstance::CreateInstance();
         VulkanInstance::SetupDebugMessenger();
-        this->windowSurface.CreateSurface(this->instance, window);
+        this->windowSurface.CreateSurface(this->instance, this->rendererWindow.GetWindow());
         this->physicalDevice.PickPhysicalDevice(this->instance);
         this->physicalDevice.CreateLogicalDevice(enableValidationLayers);
         this->swapChain.CreateSwapChain();
         this->swapChain.CreateImageViews();
-        this->renderPass.CreateRenderPass();
-        this->vulkanPipeline = std::make_unique<VulkanPipeline>(this->physicalDevice.GetLogicalDevice(), "Shaders/MyShader.vert.spv", "Shaders/MyShader.frag.spv");
-        this->vulkanPipeline->CreateGraphicsPipeline(this->renderPass.GetRenderPass());
-        this->frameBuffer.CreateFramebuffers();
+        this->renderPass.CreateRenderPass(this->swapChain.GetSwapChainImageFormat());
+        this->vulkanPipeline.CreateGraphicsPipeline(this->renderPass.GetRenderPass());
+        this->swapChain.CreateFramebuffers();
         //TEMPORARY
         QueueFamilyIndices indices = this->physicalDevice.FindQueueFamilies(this->physicalDevice.GetPhysicalDevice());
         this->commandBuffer.CreateCommandPool(indices.graphicsFamily.value());
@@ -85,8 +88,8 @@ namespace OHE
     {
         this->fence.CleanupSyncObjects();
         this->commandBuffer.DestroyCommandPool();
-        this->frameBuffer.DestroyFramebuffers();
-        this->vulkanPipeline->DestroyGraphicsPipeline();
+        this->swapChain.DestroyFramebuffers();
+        this->vulkanPipeline.DestroyGraphicsPipeline();
         this->renderPass.DestroyRenderPass();
         this->swapChain.DestroyImageViews();
         this->swapChain.DestroySwapChain();
@@ -116,7 +119,7 @@ namespace OHE
         std::vector<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-        for (const char *validationLayer : validationLayers)
+        for (const char *validationLayer : this->physicalDevice.validationLayers)
         {
             bool layerFound = false;
             for (const auto &layerProperties : availableLayers)
@@ -202,32 +205,30 @@ namespace OHE
 
     void VulkanInstance::DrawFrame()
     {
-        vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-        vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
-        uint32_t imageIndex;
-        vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+        this->fence.WaitForFences();
+        uint32_t imageIndex = this->fence.AquireNextFrame(this->swapChain.GetSwapChain());
+        imageIndex = imageIndex % Fence::MAX_FRAMES_IN_FLIGHT;
 
-        vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
-        PhysicalDevice::RecordCommandBuffer(commandBuffers[currentFrame], imageIndex);
+        this->commandBuffer.ResetAndRecordCommandBuffer(imageIndex);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-        VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
+        VkSemaphore waitSemaphores[] = {this->fence.GetImageAvailableSemaphore()};
         VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
         submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
 
         submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
+        submitInfo.pCommandBuffers = this->commandBuffer.GetCommandBuffer(fence.GetCurrentFrame());
 
-        VkSemaphore signalSemaphores[] = {renderFinishedSemaphores[currentFrame]};
+        VkSemaphore signalSemaphores[] = {this->fence.GetRenderFinishedSemaphore()};
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS)
+        if (vkQueueSubmit(this->physicalDevice.GetGraphicsQueue(), 1, &submitInfo, this->fence.GetInFlightFence()) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit draw command buffer!");
         }
@@ -238,13 +239,13 @@ namespace OHE
         presentInfo.waitSemaphoreCount = 1;
         presentInfo.pWaitSemaphores = signalSemaphores;
 
-        VkSwapchainKHR swapChains[] = {swapChain};
+        VkSwapchainKHR swapChains[] = {swapChain.GetSwapChain()};
         presentInfo.swapchainCount = 1;
         presentInfo.pSwapchains = swapChains;
 
         presentInfo.pImageIndices = &imageIndex;
 
-        vkQueuePresentKHR(presentQueue, &presentInfo);
+        vkQueuePresentKHR(this->physicalDevice.GetPresentQueue(), &presentInfo);
 
         fence.NextFrame();
     }

@@ -19,10 +19,10 @@ namespace OHE
     class VulkanInstance
     {
     public:
-        VulkanInstance();
+        VulkanInstance(RendererWindow &window);
         ~VulkanInstance();
 
-        bool Initialize(GLFWwindow *window);
+        bool Initialize();
         bool Cleanup();
 
         VkInstance &GetInstance() { return instance; }
@@ -35,17 +35,18 @@ namespace OHE
             const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
             void *pUserData);
 
-        void VulkanInstance::DrawFrame();
+        void DrawFrame();
 
     private:
+        RendererWindow &rendererWindow;
         VkInstance instance;
         WindowSurface windowSurface;
-        PhysicalDevice physicalDevice;
-        SwapChain swapChain;
-        RenderPass renderPass;
-        std::unique_ptr<VulkanPipeline> vulkanPipeline;
-        CommandBuffer commandBuffer;
-        Fence fence;
+        PhysicalDevice physicalDevice{windowSurface.GetSurface()};
+        VulkanPipeline vulkanPipeline{physicalDevice.GetLogicalDevice(), "Shaders/MyShader.vert.spv", "Shaders/MyShader.frag.spv" };
+        RenderPass renderPass{physicalDevice.GetLogicalDevice()};
+        SwapChain swapChain{physicalDevice.GetLogicalDevice(), physicalDevice, windowSurface.GetSurface(), rendererWindow, renderPass.GetRenderPass()};
+        CommandBuffer commandBuffer{physicalDevice.GetLogicalDevice(), swapChain, renderPass, vulkanPipeline};
+        Fence fence{physicalDevice.GetLogicalDevice()};
 
         VkDebugUtilsMessengerEXT debugMessenger;
 
