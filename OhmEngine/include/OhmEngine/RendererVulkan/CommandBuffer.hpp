@@ -17,8 +17,8 @@ namespace OHE
             void CreateCommandPool(uint32_t queueFamilyIndex);
             void CreateCommandBuffers();
             void DestroyCommandPool();
-            
-            void ResetAndRecordCommandBuffer(uint32_t imageIndex);
+
+            void ResetAndRecordCommandBuffer(int frame, uint32_t imageIndex);
 
             VkCommandBuffer *GetCommandBuffer(uint32_t index) { return &m_commandBuffers[index]; }
             

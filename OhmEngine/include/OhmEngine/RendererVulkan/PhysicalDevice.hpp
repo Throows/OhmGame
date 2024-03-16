@@ -46,10 +46,10 @@ namespace OHE
 
         const std::vector<const char *> validationLayers = {
             "VK_LAYER_KHRONOS_validation",
-            "VK_LAYER_LUNARG_api_dump",
-            "VK_LAYER_KHRONOS_profiles",
-            "VK_LAYER_KHRONOS_synchronization2",
-            "VK_LAYER_KHRONOS_shader_object",
+            //"VK_LAYER_LUNARG_api_dump",
+            //"VK_LAYER_KHRONOS_profiles",
+            //"VK_LAYER_KHRONOS_synchronization2",
+            //"VK_LAYER_KHRONOS_shader_object",
         };
 
         SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);

@@ -205,12 +205,12 @@ namespace OHE
 
     void VulkanInstance::DrawFrame()
     {
-
+        int frame = this->fence.GetCurrentFrame();
         this->fence.WaitForFences();
         uint32_t imageIndex = this->fence.AquireNextFrame(this->swapChain.GetSwapChain());
-        imageIndex = imageIndex % Fence::MAX_FRAMES_IN_FLIGHT;
+        //imageIndex = imageIndex % Fence::MAX_FRAMES_IN_FLIGHT;
 
-        this->commandBuffer.ResetAndRecordCommandBuffer(imageIndex);
+        this->commandBuffer.ResetAndRecordCommandBuffer(frame, imageIndex);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -222,7 +222,7 @@ namespace OHE
         submitInfo.pWaitDstStageMask = waitStages;
 
         submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = this->commandBuffer.GetCommandBuffer(fence.GetCurrentFrame());
+        submitInfo.pCommandBuffers = this->commandBuffer.GetCommandBuffer(frame);
 
         VkSemaphore signalSemaphores[] = {this->fence.GetRenderFinishedSemaphore()};
         submitInfo.signalSemaphoreCount = 1;

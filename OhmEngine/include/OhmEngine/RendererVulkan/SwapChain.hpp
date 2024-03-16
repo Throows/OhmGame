@@ -25,10 +25,10 @@ namespace OHE
             VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
             VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
-            VkExtent2D GetSwapChainExtent() { return swapChainExtent; }
-            VkFramebuffer GetSwapChainFramebuffer(uint32_t index) { return m_swapChainFramebuffers[index]; }
+            VkExtent2D &GetSwapChainExtent() { return swapChainExtent; }
+            VkFramebuffer &GetSwapChainFramebuffer(uint32_t index) { return m_swapChainFramebuffers[index]; }
             VkFormat &GetSwapChainImageFormat() { return swapChainImageFormat; }
-            VkSwapchainKHR GetSwapChain() { return swapChain; }
+            VkSwapchainKHR &GetSwapChain() { return swapChain; }
 
 
         private:

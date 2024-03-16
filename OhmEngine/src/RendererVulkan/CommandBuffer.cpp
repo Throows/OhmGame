@@ -95,9 +95,9 @@ namespace OHE
         }
     }
 
-    void CommandBuffer::ResetAndRecordCommandBuffer(uint32_t imageIndex)
+    void CommandBuffer::ResetAndRecordCommandBuffer(int frame, uint32_t imageIndex)
     {
-        vkResetCommandBuffer(m_commandBuffers[imageIndex], 0);
-        RecordCommandBuffer(m_commandBuffers[imageIndex], imageIndex);
+        vkResetCommandBuffer(m_commandBuffers[frame], 0);
+        RecordCommandBuffer(m_commandBuffers[frame], imageIndex);
     }
 }
