@@ -8,7 +8,7 @@ namespace OHE
     class CommandBuffer
     {
         public:
-            CommandBuffer(VkDevice &device, SwapChain &swapChain, RenderPass &renderPass, VulkanPipeline &pipeline);
+            CommandBuffer(VkDevice &device, SwapChain &swapChain, RenderPass &renderPass, VulkanPipeline &pipeline, VertexBuffer &vertexBuffer);
             ~CommandBuffer();
 
             CommandBuffer(const CommandBuffer&) = delete;
@@ -27,6 +27,7 @@ namespace OHE
             SwapChain &swapChain;
             RenderPass &renderPass;
             VulkanPipeline &pipeline;
+            VertexBuffer &vertexBuffer;
 
             VkCommandPool m_commandPool;
             std::vector<VkCommandBuffer> m_commandBuffers;

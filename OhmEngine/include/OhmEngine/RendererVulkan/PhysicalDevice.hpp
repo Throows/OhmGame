@@ -57,6 +57,8 @@ namespace OHE
         VkQueue GetGraphicsQueue() { return graphicsQueue; }
         VkQueue GetPresentQueue() { return presentQueue; }
 
+        uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
     private: 
         VkSurfaceKHR &surface;
 

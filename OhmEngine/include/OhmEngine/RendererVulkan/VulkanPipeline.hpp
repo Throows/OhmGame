@@ -1,6 +1,10 @@
 #pragma once
 
+#include <vulkan/vulkan.h>
+#include <OhmEngine/RendererVulkan/VertexBuffer.hpp>
+
 namespace OHE {
+
     class VulkanPipeline {
     public:
         VulkanPipeline(VkDevice &device, const std::string &vertFile, const std::string &fragFile);

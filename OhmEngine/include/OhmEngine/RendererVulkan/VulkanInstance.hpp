@@ -46,8 +46,9 @@ namespace OHE
         VulkanPipeline vulkanPipeline{physicalDevice.GetLogicalDevice(), "Shaders/MyShader.vert.spv", "Shaders/MyShader.frag.spv" };
         RenderPass renderPass{physicalDevice.GetLogicalDevice()};
         SwapChain swapChain{physicalDevice.GetLogicalDevice(), physicalDevice, windowSurface.GetSurface(), rendererWindow, renderPass.GetRenderPass()};
-        CommandBuffer commandBuffer{physicalDevice.GetLogicalDevice(), swapChain, renderPass, vulkanPipeline};
+        CommandBuffer commandBuffer{physicalDevice.GetLogicalDevice(), swapChain, renderPass, vulkanPipeline, vertexBuffer};
         Fence fence{physicalDevice.GetLogicalDevice()};
+        VertexBuffer vertexBuffer{physicalDevice};
 
         VkDebugUtilsMessengerEXT debugMessenger;
 

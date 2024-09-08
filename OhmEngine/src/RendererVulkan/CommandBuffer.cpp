@@ -3,8 +3,8 @@
 namespace OHE 
 {
 
-    CommandBuffer::CommandBuffer(VkDevice &device, SwapChain &swapChain, RenderPass &renderPass, VulkanPipeline &pipeline) 
-        : device(device), swapChain(swapChain), renderPass(renderPass), pipeline(pipeline)
+    CommandBuffer::CommandBuffer(VkDevice &device, SwapChain &swapChain, RenderPass &renderPass, VulkanPipeline &pipeline, VertexBuffer &vertexBuffer) 
+        : device(device), swapChain(swapChain), renderPass(renderPass), pipeline(pipeline), vertexBuffer(vertexBuffer)
     {
     }
 
@@ -85,7 +85,12 @@ namespace OHE
         scissor.extent = swapChain.GetSwapChainExtent();
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-        vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetGraphicsPipeline());
+        VkBuffer vertexBuffers[] = {vertexBuffer.GetVertexBuffer()};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
