@@ -47,14 +47,11 @@ namespace OHE
     void Fence::WaitForFences()
     {
         vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-        vkResetFences(device, 1, &inFlightFences[currentFrame]);
     }
 
-    uint32_t Fence::AquireNextFrame(VkSwapchainKHR swapChain)
+    void Fence::ResetFences()
     {
-        uint32_t imageIndex;
-        vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-        return imageIndex;
+        vkResetFences(device, 1, &inFlightFences[currentFrame]);
     }
 
 }   // namespace OHE

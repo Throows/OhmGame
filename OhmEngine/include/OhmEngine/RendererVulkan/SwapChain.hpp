@@ -15,11 +15,14 @@ namespace OHE
             SwapChain& operator=(const SwapChain&) = delete;
 
             void CreateSwapChain();
+            void RecreateSwapChain();
             void CreateFramebuffers();
             void CreateImageViews();
+            void CleanupSwapChain();    
             void DestroySwapChain();
             void DestroyImageViews();
             void DestroyFramebuffers();
+            uint32_t AquireNextFrame(VkSemaphore &imageAvailableSemaphores);
 
             VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
             VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
@@ -29,6 +32,9 @@ namespace OHE
             VkFramebuffer &GetSwapChainFramebuffer(uint32_t index) { return m_swapChainFramebuffers[index]; }
             VkFormat &GetSwapChainImageFormat() { return swapChainImageFormat; }
             VkSwapchainKHR &GetSwapChain() { return swapChain; }
+
+            void SetFrameBufferResized(bool resize) { frameBufferResized = resize; }
+            bool IsFrameBufferResized() { return frameBufferResized; }
 
 
         private:
@@ -45,6 +51,7 @@ namespace OHE
             std::vector<VkImageView> swapChainImageViews;
 
             std::vector<VkFramebuffer> m_swapChainFramebuffers;
+            bool frameBufferResized = false;
     };
 
 } // namespace OHE

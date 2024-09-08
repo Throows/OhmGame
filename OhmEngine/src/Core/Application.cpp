@@ -3,9 +3,10 @@
 namespace OHE
 {
     Application::Application(int argc, char** argv)
-        : m_Argc(argc), m_Argv(argv), renderWindow{"OhmJourney - The Electronic Game", 800, 600}, vulkan_instance{renderWindow}
+        : m_Argc(argc), m_Argv(argv), vulkan_instance{renderWindow}, renderWindow{"OhmJourney - The Electronic Game", 800, 600}
     {
         s_Instance = this;
+
     }
 
     Application::~Application()
@@ -16,6 +17,7 @@ namespace OHE
     {
         this->renderWindow.InitializeWindow();
         vulkan_instance.Initialize();
+        this->renderWindow.SetFrameBufferSizeUserData(&vulkan_instance);
         return false;
     }
 

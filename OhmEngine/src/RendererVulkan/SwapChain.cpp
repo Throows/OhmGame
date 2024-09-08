@@ -1,4 +1,4 @@
-#include <OhmEngine/RendererVulkan/SwapChain.hpp>   
+#include <OhmEngine/RendererVulkan/SwapChain.hpp>
 
 namespace OHE
 {
@@ -70,6 +70,23 @@ namespace OHE
         swapChainExtent = extent;
     }
 
+    void SwapChain::RecreateSwapChain()
+    {
+        int width = 0, height = 0;
+        glfwGetFramebufferSize(window.GetWindow(), &width, &height);
+        while (width == 0 || height == 0) {
+            glfwGetFramebufferSize(window.GetWindow(), &width, &height);
+            glfwWaitEvents();
+        }
+        vkDeviceWaitIdle(device);
+
+        CleanupSwapChain();
+
+        CreateSwapChain();
+        CreateImageViews();
+        CreateFramebuffers();
+    }
+
     void SwapChain::DestroySwapChain()
     {
         vkDestroySwapchainKHR(device, swapChain, nullptr);
@@ -100,6 +117,13 @@ namespace OHE
                 throw std::runtime_error("failed to create image views!");
             }
         }
+    }
+
+    void SwapChain::CleanupSwapChain()
+    {
+        DestroyFramebuffers();
+        DestroyImageViews();
+        DestroySwapChain();
     }
 
     void SwapChain::DestroyImageViews()
@@ -187,5 +211,20 @@ namespace OHE
         {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
         }
+    }
+
+    uint32_t SwapChain::AquireNextFrame(VkSemaphore &imageAvailableSemaphores)
+    {
+        uint32_t imageIndex;
+        VkResult result = vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphores, VK_NULL_HANDLE, &imageIndex);
+        if (result == VK_ERROR_OUT_OF_DATE_KHR)
+        {
+            RecreateSwapChain();
+            return 0;
+        } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+        {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
+        return imageIndex;
     }
 } // namespace OHE

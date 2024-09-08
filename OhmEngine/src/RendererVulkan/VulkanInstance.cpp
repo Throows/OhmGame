@@ -9,6 +9,7 @@ namespace OHE
 
     void VulkanInstance::CreateInstance()
     {
+        // Validation layer : tools for developement 
         if (enableValidationLayers && !CheckValidationLayerSupport())
         {
             throw std::runtime_error("validation layers requested, but not available!");
@@ -20,7 +21,7 @@ namespace OHE
         appInfos.applicationVersion = VK_MAKE_VERSION(0, 0, 1);
         appInfos.pEngineName = "OhmEngine";
         appInfos.engineVersion = VK_MAKE_VERSION(0, 0, 1);
-        appInfos.apiVersion = VK_API_VERSION_1_2;
+        appInfos.apiVersion = VK_API_VERSION_1_3;
 
         std::vector<const char*> requiredExtensions = GetRequiredExtensions();
         requiredExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
@@ -86,13 +87,11 @@ namespace OHE
 
     bool VulkanInstance::Cleanup()
     {
+        this->swapChain.CleanupSwapChain();
         this->fence.CleanupSyncObjects();
         this->commandBuffer.DestroyCommandPool();
-        this->swapChain.DestroyFramebuffers();
         this->vulkanPipeline.DestroyGraphicsPipeline();
         this->renderPass.DestroyRenderPass();
-        this->swapChain.DestroyImageViews();
-        this->swapChain.DestroySwapChain();
         this->physicalDevice.DestroyLogicalDevice();
         if (enableValidationLayers)
         {
@@ -108,7 +107,26 @@ namespace OHE
                                                                     const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                                                     void *pUserData)
     {
-        OHE_ENGINE_TRACE("(Vulkan) : {0}", pCallbackData->pMessage);
+        (void)messageType;
+        (void)pUserData;
+        switch (messageSeverity)
+        {
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+            OHE_ENGINE_TRACE("(Vulkan) : {0}", pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+            OHE_ENGINE_INFO("(Vulkan) : {0}", pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            OHE_ENGINE_WARN("(Vulkan) : {0}", pCallbackData->pMessage);
+            break;
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            OHE_ENGINE_ERROR("(Vulkan) : {0}", pCallbackData->pMessage);
+            break;
+        default:
+            OHE_ENGINE_ERROR("(Vulkan) : {0}", pCallbackData->pMessage);
+            break;
+        }
         return VK_FALSE;
     }
 
@@ -207,8 +225,8 @@ namespace OHE
     {
         int frame = this->fence.GetCurrentFrame();
         this->fence.WaitForFences();
-        uint32_t imageIndex = this->fence.AquireNextFrame(this->swapChain.GetSwapChain());
-        //imageIndex = imageIndex % Fence::MAX_FRAMES_IN_FLIGHT;
+        uint32_t imageIndex = this->swapChain.AquireNextFrame(this->fence.GetImageAvailableSemaphore());
+        this->fence.ResetFences();
 
         this->commandBuffer.ResetAndRecordCommandBuffer(frame, imageIndex);
 
@@ -245,7 +263,17 @@ namespace OHE
 
         presentInfo.pImageIndices = &imageIndex;
 
-        vkQueuePresentKHR(this->physicalDevice.GetPresentQueue(), &presentInfo);
+        VkResult result = vkQueuePresentKHR(this->physicalDevice.GetPresentQueue(), &presentInfo);
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || this->swapChain.IsFrameBufferResized()) 
+        {
+            this->swapChain.SetFrameBufferResized(false);
+            this->swapChain.RecreateSwapChain();
+        }
+        else if (result != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to present swap chain image!");
+        }
 
         fence.NextFrame();
     }

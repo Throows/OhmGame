@@ -28,6 +28,7 @@ namespace OHE
         VkInstance &GetInstance() { return instance; }
         PhysicalDevice &GetPhysicalDevice() { return physicalDevice; }
         WindowSurface &GetWindowSurface() { return windowSurface; }
+        SwapChain &GetSwapChain() { return swapChain; }
 
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

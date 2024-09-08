@@ -23,6 +23,8 @@ public:
     void InitializeWindow();
     void DestroyWindow();
 
+    void SetFrameBufferSizeUserData(void *user_data);
+
     bool ShouldClose() { return glfwWindowShouldClose(window); }
     FrameBufferSize GetFrameBufferSize();
 

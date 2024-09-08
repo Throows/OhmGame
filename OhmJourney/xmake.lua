@@ -15,10 +15,10 @@ target("OhmJourney")
   if is_plat("macosx") then
     -- don't use the xmake package thing I KNOW ugly ... need invastigation bc vulkansdk doesn't seems compatible with macos
     local vulkan_sdk_path = os.getenv("VK_SDK_PATH")
-    add_includedirs(vulkan_sdk_path .. "macOS/include")
-    add_linkdirs(vulkan_sdk_path .. "macOS/lib")
+    add_includedirs(vulkan_sdk_path .. "/include")
+    add_linkdirs(vulkan_sdk_path .. "/lib")
     add_links("vulkan")
-    add_rpathdirs(vulkan_sdk_path .. "macOS/lib")
+    add_rpathdirs(vulkan_sdk_path .. "/lib")
     add_defines("VK_USE_PLATFORM_METAL_EXT")
     add_frameworks("quartzcore", "AppKit")
   elseif is_plat("windows") then

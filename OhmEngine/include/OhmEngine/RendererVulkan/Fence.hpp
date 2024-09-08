@@ -12,7 +12,7 @@ namespace OHE
         void CleanupSyncObjects();
 
         void WaitForFences();
-        uint32_t AquireNextFrame(VkSwapchainKHR swapChain);
+        void ResetFences();
         void NextFrame() { currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT; }
         uint32_t GetCurrentFrame() { return currentFrame; }
 
@@ -27,7 +27,6 @@ namespace OHE
         std::vector<VkSemaphore> imageAvailableSemaphores;
         std::vector<VkSemaphore> renderFinishedSemaphores;
         std::vector<VkFence> inFlightFences;
-
         
         uint32_t currentFrame = 0;
     };

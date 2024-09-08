@@ -23,8 +23,8 @@ namespace OHE
         RendererWindow &GetRendererWindow() { return renderWindow; }
 
     private:
-        int m_Argc;
-        char** m_Argv;
+        [[maybe_unused]] int m_Argc;
+        [[maybe_unused]] char** m_Argv;
 
         static Application* s_Instance;
         VulkanInstance vulkan_instance;

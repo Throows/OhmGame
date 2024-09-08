@@ -1,7 +1,17 @@
 #include <OhmEngine/RendererVulkan/RendererWindow.hpp>
+#include <OhmEngine/RendererVulkan/VulkanInstance.hpp>
 
 namespace OHE
 {
+
+    static void FramebufferResizeCallback(GLFWwindow *window, int width, int height)
+    {
+        (void)width;
+        (void)height;
+        auto app = reinterpret_cast<VulkanInstance*>(glfwGetWindowUserPointer(window));
+        app->GetSwapChain().SetFrameBufferResized(true);
+    }
+
     RendererWindow::RendererWindow(std::string name, unsigned int width, unsigned int height)
         : m_width(width), m_height(height), m_windowName(name)
     {
@@ -16,7 +26,6 @@ namespace OHE
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         this->window = glfwCreateWindow(this->m_width, this->m_height, this->m_windowName.c_str(), nullptr, nullptr);
 
@@ -34,6 +43,12 @@ namespace OHE
     {
         glfwDestroyWindow(this->window);
         glfwTerminate();
+    }
+
+    void RendererWindow::SetFrameBufferSizeUserData(void *user_data)
+    {
+        glfwSetWindowUserPointer(this->window, user_data);
+        glfwSetFramebufferSizeCallback(this->window, OHE::FramebufferResizeCallback);
     }
 
     FrameBufferSize RendererWindow::GetFrameBufferSize()
