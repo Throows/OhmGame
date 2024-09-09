@@ -7,6 +7,9 @@
 
 namespace OHE 
 {
+
+    class CommandBuffer;
+
     struct Vertex
     {
         glm::vec2 pos;
@@ -52,16 +55,20 @@ namespace OHE
     class VertexBuffer
     {
     public:
-        VertexBuffer(PhysicalDevice &physicalDevice);
+        VertexBuffer(PhysicalDevice &physicalDevice, CommandBuffer &commandBuffer);
         ~VertexBuffer();
 
+        void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         void CreateVertexBuffer();
         void CleanupVertexBuffer();
+
+        void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
         VkBuffer &GetVertexBuffer() { return vertexBuffer; }
 
     private:
         PhysicalDevice &physicalDevice;
+        CommandBuffer &m_commandBuffer;
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
     };

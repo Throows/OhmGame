@@ -2,6 +2,7 @@
 #include <OhmEngine/RendererVulkan/SwapChain.hpp>
 #include <OhmEngine/RendererVulkan/RenderPass.hpp>
 #include <OhmEngine/RendererVulkan/VulkanPipeline.hpp>
+#include <OhmEngine/RendererVulkan/VertexBuffer.hpp>
 
 namespace OHE
 {
@@ -21,6 +22,9 @@ namespace OHE
             void ResetAndRecordCommandBuffer(int frame, uint32_t imageIndex);
 
             VkCommandBuffer *GetCommandBuffer(uint32_t index) { return &m_commandBuffers[index]; }
+
+            VkCommandPool &GetCommandPool() { return m_commandPool; };
+            VkPipeline GetGraphicsPipeline() { return pipeline.GetGraphicsPipeline(); }
             
         private: 
             VkDevice &device;

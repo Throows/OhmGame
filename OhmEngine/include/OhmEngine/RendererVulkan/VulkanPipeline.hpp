@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
-#include <OhmEngine/RendererVulkan/VertexBuffer.hpp>
 
 namespace OHE {
 

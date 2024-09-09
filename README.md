@@ -1,6 +1,6 @@
 ## OhmGame
 
-Under heavy developement
+Under heavy developement, The only goal is to make it work, no matter the optimization nor clean code
 
 Release date : 2027
 

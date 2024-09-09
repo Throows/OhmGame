@@ -1,4 +1,5 @@
 #include <OhmEngine/RendererVulkan/VulkanPipeline.hpp>
+#include <OhmEngine/RendererVulkan/VertexBuffer.hpp>
 
 namespace OHE {
 

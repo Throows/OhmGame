@@ -6,6 +6,7 @@
 #include <OhmEngine/RendererVulkan/RenderPass.hpp>
 #include <OhmEngine/RendererVulkan/VulkanPipeline.hpp>
 #include <OhmEngine/RendererVulkan/CommandBuffer.hpp>
+#include <OhmEngine/RendererVulkan/VertexBuffer.hpp>
 #include <OhmEngine/RendererVulkan/Fence.hpp>
 
 #ifdef NDEBUG
@@ -48,7 +49,7 @@ namespace OHE
         SwapChain swapChain{physicalDevice.GetLogicalDevice(), physicalDevice, windowSurface.GetSurface(), rendererWindow, renderPass.GetRenderPass()};
         CommandBuffer commandBuffer{physicalDevice.GetLogicalDevice(), swapChain, renderPass, vulkanPipeline, vertexBuffer};
         Fence fence{physicalDevice.GetLogicalDevice()};
-        VertexBuffer vertexBuffer{physicalDevice};
+        VertexBuffer vertexBuffer{physicalDevice, commandBuffer};
 
         VkDebugUtilsMessengerEXT debugMessenger;
 
