@@ -63,10 +63,36 @@ namespace OHE
         vkFreeMemory(physicalDevice.GetLogicalDevice(), stagingBufferMemory, nullptr);
     }
 
+    void VertexBuffer::CreateIndexBuffer()
+    {
+        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+
+        VertexBuffer::CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+        void *data;
+        vkMapMemory(physicalDevice.GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, indices.data(), (size_t)bufferSize);
+        vkUnmapMemory(physicalDevice.GetLogicalDevice(), stagingBufferMemory);
+
+        VertexBuffer::CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+        VertexBuffer::CopyBuffer(stagingBuffer, indexBuffer, bufferSize);
+
+        vkDestroyBuffer(physicalDevice.GetLogicalDevice(), stagingBuffer, nullptr);
+        vkFreeMemory(physicalDevice.GetLogicalDevice(), stagingBufferMemory, nullptr);
+    }
+
     void VertexBuffer::CleanupVertexBuffer()
     {
         vkDestroyBuffer(physicalDevice.GetLogicalDevice(), vertexBuffer, nullptr);
         vkFreeMemory(physicalDevice.GetLogicalDevice(), vertexBufferMemory, nullptr);
+    }
+
+    void VertexBuffer::CleanupIndexBuffer()
+    {
+        vkDestroyBuffer(physicalDevice.GetLogicalDevice(), indexBuffer, nullptr);
+        vkFreeMemory(physicalDevice.GetLogicalDevice(), indexBufferMemory, nullptr);
     }
 
     void VertexBuffer::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)

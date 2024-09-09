@@ -81,6 +81,7 @@ namespace OHE
         QueueFamilyIndices indices = this->physicalDevice.FindQueueFamilies(this->physicalDevice.GetPhysicalDevice());
         this->commandBuffer.CreateCommandPool(indices.graphicsFamily.value());
         this->vertexBuffer.CreateVertexBuffer();
+        this->vertexBuffer.CreateIndexBuffer();
         this->commandBuffer.CreateCommandBuffers();
         this->fence.CreateSyncObjects();
         return false;
@@ -90,6 +91,7 @@ namespace OHE
     {
         this->swapChain.CleanupSwapChain();
         this->vertexBuffer.CleanupVertexBuffer();
+        this->vertexBuffer.CleanupIndexBuffer();
         this->fence.CleanupSyncObjects();
         this->commandBuffer.DestroyCommandPool();
         this->vulkanPipeline.DestroyGraphicsPipeline();

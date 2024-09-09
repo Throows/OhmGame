@@ -45,11 +45,16 @@ namespace OHE
         }
     };
 
-    // RGB triangle
+    // RGB rectangle
     const std::vector<Vertex> vertices = {
-        {{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
-        {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    };
+
+    const std::vector<uint16_t> indices = {
+        0, 1, 2, 2, 3, 0
     };
 
     class VertexBuffer
@@ -60,16 +65,22 @@ namespace OHE
 
         void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         void CreateVertexBuffer();
+        void CreateIndexBuffer();
         void CleanupVertexBuffer();
+        void CleanupIndexBuffer();
 
         void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
         VkBuffer &GetVertexBuffer() { return vertexBuffer; }
+        VkBuffer &GetIndexBuffer() { return indexBuffer; }
 
     private:
         PhysicalDevice &physicalDevice;
         CommandBuffer &m_commandBuffer;
+
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
+        VkBuffer indexBuffer;
+        VkDeviceMemory indexBufferMemory;
     };
 }
